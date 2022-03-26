@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import nums_from_string
 import requests
 from bs4 import BeautifulSoup
 
@@ -75,6 +76,18 @@ class FirstYarParser(NewsSiteParser):
             news_item['categories'] = list()
         if article_is_ad:
             news_item['categories'].append('Реклама')
+        meta_author = super().retrieve_html((item.find('a', itemprop='url').get('href'))).find('div', id='author_news')
+        if meta_author.find('div', class_='author').find('a'):
+            news_item['author'] = meta_author.find('div', class_='author').find('a').get_text(strip=True)
+            news_item['authors_rate'] = nums_from_string.to_num(meta_author.find('div', class_='author').find('div', class_='rating')\
+                .find('div', class_='current').get('data-value'))
+            news_item['authors_rate_score'] = nums_from_string.get_nums(meta_author.find('div', class_='author').find('div', class_='rating')\
+                .get_text(strip=True))[0]
+        else: news_item['author'] = news_item['authors_rate'] = news_item['authors_rate_score'] = ''
+        news_item['likes_count'] = nums_from_string.get_nums(meta_author.find('div', class_='rate').find('a', class_='icons-like')\
+            .get_text(strip=True))[0]
+        news_item['dislikes_count'] = nums_from_string.get_nums(meta_author.find('div', class_='rate').find('a', class_='icons-dislike')\
+            .get_text(strip=True))[0]
         news_item['source'] = 'Первый Ярославский'
         return news_item, False
 

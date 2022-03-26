@@ -19,5 +19,6 @@ if __name__ == '__main__':
     texts = []
     for parser in parsers:
         texts.append(run_parser(parser, date))
-    print(json.dumps(texts, default=json_util.default, ensure_ascii=False), end='\n\n')
+        break
+    # print(json.dumps(texts, default=json_util.default, ensure_ascii=False), end='\n\n')
     saver.Saver.file_writer(texts)
