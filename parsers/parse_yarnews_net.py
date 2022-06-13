@@ -4,7 +4,7 @@ from datetime import datetime
 from parsers.news_site_parser import NewsSiteParser
 
 
-class YarnewsNetParser(NewsSiteParser):
+class YarNewsNetParser(NewsSiteParser):
     """
     Класс парсера разбирающего сайт https://www.yarnews.net/
     """
@@ -42,6 +42,8 @@ class YarnewsNetParser(NewsSiteParser):
         news_item['date_time'] = datetime.strptime(item.find('span', class_="news-date").get_text(),
                                                    "%d.%m.%Y в %H:%M")
         news_item['categories'] = list()
+        news_item['authors_name'] = news_item['authors_rate'] = news_item['authors_rate_score'] =\
+            news_item['likes_count'] = news_item['dislikes_count'] = news_item['comments'] = news_item['reposts'] = ''
         news_item['source'] = 'YarNews'
         return news_item, False
 

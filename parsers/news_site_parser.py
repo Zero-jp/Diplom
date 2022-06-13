@@ -2,14 +2,14 @@
 import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 import requests
+
 
 headers_req = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0)\
      Gecko/20100101 Firefox/75.0', 'accept': '*/*'
 }
-
 
 class SiteUnreachableException(Exception):
     """ Исключение, описывающее ситуацию, при которой не удаётся подключиться к новостному сайту"""
@@ -82,7 +82,7 @@ class NewsSiteParser(ABC):
         return news, True
 
     @abstractmethod
-    def parse_news_item(self, item: Tag) -> dict and bool:
+    def parse_news_item(self, item) -> dict and bool:
         """
         Получение требуемой информации о новости.
 
@@ -99,7 +99,10 @@ class NewsSiteParser(ABC):
         :return: html code
         """
 
-        website_response = requests.get(website_url, headers=headers_req)
+        try:
+            website_response = requests.get(website_url, headers=headers_req)
+        except requests.exceptions.Timeout:
+            print("Timeout occurred")
         if website_response.status_code != requests.codes.ok:
             raise SiteUnreachableException()
         return BeautifulSoup(website_response.content, 'html.parser')

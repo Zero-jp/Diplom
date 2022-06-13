@@ -78,17 +78,21 @@ class FirstYarParser(NewsSiteParser):
             news_item['categories'].append('Реклама')
         meta_author = super().retrieve_html((item.find('a', itemprop='url').get('href'))).find('div', id='author_news')
         if meta_author.find('div', class_='author').find('a'):
-            news_item['author'] = meta_author.find('div', class_='author').find('a').get_text(strip=True)
-            news_item['authors_rate'] = nums_from_string.to_num(meta_author.find('div', class_='author').find('div', class_='rating')\
-                .find('div', class_='current').get('data-value'))
+            news_item['authors_name'] = meta_author.find('div', class_='author').find('a').get_text(strip=True)
+            try:
+                news_item['authors_rate'] = nums_from_string.to_num(meta_author.find('div', class_='author').find('div', class_='rating')\
+                    .find('div', class_='current').get('data-value'))
+            except ValueError:
+                news_item['authors_rate'] = ''
             news_item['authors_rate_score'] = nums_from_string.get_nums(meta_author.find('div', class_='author').find('div', class_='rating')\
                 .get_text(strip=True))[0]
-        else: news_item['author'] = news_item['authors_rate'] = news_item['authors_rate_score'] = ''
+        else: news_item['authors_name'] = news_item['authors_rate'] = news_item['authors_rate_score'] = ''
         news_item['likes_count'] = nums_from_string.get_nums(meta_author.find('div', class_='rate').find('a', class_='icons-like')\
             .get_text(strip=True))[0]
         news_item['dislikes_count'] = nums_from_string.get_nums(meta_author.find('div', class_='rate').find('a', class_='icons-dislike')\
             .get_text(strip=True))[0]
         news_item['source'] = 'Первый Ярославский'
+        news_item['comments'] = news_item['reposts'] = ''
         return news_item, False
 
     @staticmethod
@@ -118,7 +122,7 @@ class FirstYarParser(NewsSiteParser):
         каждой новости, с первой страницы; флаг (True, если не достигнута последняя новость из заданного интервала)
         """
         request_data = {}
-        html = super().retrieve_html('https://1yar.tv/all/')
+        html = super().retrieve_html('https://1yar.tv/vse/')
         items = html.find('div', class_='news').find_all('article')
         news, more_news_exists = super().parse_news_items(items, earliest_date)
         request_data['token'] = html.find('div', id='center').find('input').get('value')

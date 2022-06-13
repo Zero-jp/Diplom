@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 import requests
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from parsers.news_site_parser import NewsSiteParser
 
 
@@ -9,7 +9,7 @@ class YarNovostiParser(NewsSiteParser):
     """
     Класс парсера разбирающего сайт https://yarnovosti.com/all/
     """
-
+    # ЕСТЬ КЛЮЧЕВЫЕ СЛОВА!!!!!
     @staticmethod
     def retrieve_further_news(request_data) -> list:
         """
@@ -39,7 +39,7 @@ class YarNovostiParser(NewsSiteParser):
         request_data['loaded'] += 18
         return items
 
-    def parse_news_item(self, item: Tag) -> dict and bool:
+    def parse_news_item(self, item) -> dict and bool:
         """
         Получение требуемой информации о новости.
 
@@ -62,11 +62,13 @@ class YarNovostiParser(NewsSiteParser):
             news_item['categories'] += [item.find("div", class_="categories").find("a").text]
         except AttributeError:
             news_item['categories'] = []
+        news_item['authors_name'] = news_item['authors_rate'] = news_item['authors_rate_score'] =\
+            news_item['likes_count'] = news_item['dislikes_count'] = news_item['comments'] = news_item['reposts'] = ''
         news_item['source'] = "ЯрНовости"
         return news_item, False
 
     @staticmethod
-    def tag_is_photo_caption(item: Tag) -> bool:
+    def tag_is_photo_caption(item) -> bool:
         """
         :return: True, если у тега нет класса
         """
