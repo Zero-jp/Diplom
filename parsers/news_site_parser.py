@@ -99,6 +99,8 @@ class NewsSiteParser(ABC):
         :return: html code
         """
 
+        website_response = requests.Response()
+
         try:
             website_response = requests.get(website_url, headers=headers_req)
         except requests.exceptions.Timeout:

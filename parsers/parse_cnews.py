@@ -71,6 +71,11 @@ class CnewsParser(NewsSiteParser):
             full_text = full_text + part.get_text().strip() + '\n'
         return full_text
 
+    def retrieve_correct_link(self, news_item: dict) -> str and bool:
+        if news_item['title'].startswith('ZOOM.CNews:'):
+            return 'https://zoom.cnews.ru' + news_item['link'], False
+        return 'crash', True
+
     def parse_news_item(self, item: any) -> dict and bool:
         """
         Получение требуемой информации о новости.
@@ -83,6 +88,10 @@ class CnewsParser(NewsSiteParser):
         news_item = {}
         news_item['title'] = item.find('a').get_text()
         news_item['link'] = item.find('a').get('href')
+        news_unreachable = False
+        if news_item['link'].split('/')[0] != 'https:':
+            news_item['link'], news_unreachable = self.retrieve_correct_link(news_item)
+        if news_unreachable: return news_item, True
         news_item['date_time'], retrieve_event_article = self.retrieve_article_date(news_item['link'])
         if retrieve_event_article:
             return news_item, True
