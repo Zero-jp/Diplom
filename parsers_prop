@@ -1,0 +1,30 @@
+title
+link
+full_text
+date_time
+source
+categories
+authors_name
+authors_rate
+authors_rate_score
+likes_count
+dislikes_count
+comments
+reposts
+
+ѕараметры с 1ого по 5ый имеютс€ в стать€х всех парсеров.
+
+
+categories отсутсвует в YarNews,
+
+author отсутсвует в YarNews, ярЌовости
+
+authors_rate отсутсвует в YarNews, ярЌовости
+
+authors_rate_score отсутсвует в YarNews, ярЌовости
+
+likes_count отсутсвует в YarNews, ярЌовости
+
+dislikes_count отсутсвует в YarNews, ярЌовости
+
+reposts есть только в VkParse
